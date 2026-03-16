@@ -7,7 +7,7 @@ It ensures plants are watered **only when needed**, saves water, and prevents ov
 ---
 ## Circuit Diagram
 
-![Smart Garden Circuit](images/circuit.png)
+![Circuit Diagram](Smart-Garden/images/circuit.png)
 ---
 
 
