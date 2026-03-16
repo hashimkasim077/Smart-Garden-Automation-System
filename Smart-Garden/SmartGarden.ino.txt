@@ -1,0 +1,73 @@
+#include <DHT.h>
+
+#define DHTPIN 2
+#define DHTTYPE DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
+
+// Sensor pins
+int soilPin = A0;
+int rainPin = A1;
+int ldrPin  = A2;
+
+// Relay pin
+int relayPin = 7;
+
+// Threshold values (adjust after testing)
+int nightLight = 200;
+int soilDry = 600;
+int rainDetect = 500;
+
+float hotTemp = 32;
+
+void setup()
+{
+  Serial.begin(9600);
+  dht.begin();
+
+  pinMode(relayPin, OUTPUT);
+  digitalWrite(relayPin, HIGH); // Pump OFF
+}
+
+void loop()
+{
+  int soil = analogRead(soilPin);
+  int rain = analogRead(rainPin);
+  int light = analogRead(ldrPin);
+  float temp = dht.readTemperature();
+
+  Serial.print("Light:"); Serial.print(light);
+  Serial.print(" Soil:"); Serial.print(soil);
+  Serial.print(" Rain:"); Serial.print(rain);
+  Serial.print(" Temp:"); Serial.println(temp);
+
+  // Priority 1: Rain → always stop
+  if (rain < rainDetect) {
+    digitalWrite(relayPin, HIGH);
+    Serial.println("RAIN → Pump OFF");
+  }
+  // Priority 2: Night → no watering
+  else if (light < nightLight) {
+    digitalWrite(relayPin, HIGH);
+    Serial.println("NIGHT → Pump OFF");
+  }
+  // Priority 3: Soil still wet → no watering
+  else if (soil < soilDry) {
+    digitalWrite(relayPin, HIGH);
+    Serial.println("WET → Pump OFF");
+  }
+  // Only here: soil is dry + no rain + daytime → water
+  else {
+    digitalWrite(relayPin, LOW);           // Pump ON
+    if (temp >= hotTemp) {
+      Serial.println("HOT → 10s");
+      delay(10000);
+    } else {
+      Serial.println("Normal → 5s");
+      delay(5000);
+    }
+    digitalWrite(relayPin, HIGH);          // Pump OFF
+  }
+
+  delay(3000);
+}
