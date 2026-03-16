@@ -1,10 +1,15 @@
 # Smart Garden Automation System
 
-## Project overeview
+## What is this Project?
 The **Smart Garden Automation System** is an **IoT-based plant watering project** that waters plants automatically based on soil moisture, weather conditions, and rain detection.  
 It ensures plants are watered **only when needed**, saves water, and prevents overwatering.
 
 ---
+## Circuit Diagram
+
+![Smart Garden Circuit](images/circuit.png)
+---
+
 
 ## Logic and How it Works
 The system uses multiple sensors to make watering decisions in this order of priority:
